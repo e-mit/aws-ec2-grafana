@@ -23,7 +23,7 @@
   "panels": [
     {
       "datasource": {
-        "type": "postgres",
+        "type": "grafana-postgresql-datasource",
         "uid": "bdgisvc9bvym8brelease"
       },
       "description": "",
@@ -76,13 +76,34 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
+            "type": "grafana-postgresql-datasource",
             "uid": "bdgisvc9bvym8brelease"
           },
+          "editorMode": "code",
+          "format": "table",
           "queryText": "select 100.0*count(*)/(select count(*) from carbonintensity) as value, rating as metric from carbonintensity group by rating;",
           "queryType": "table",
+          "rawQuery": true,
           "rawQueryText": "select 100.0*count(*)/(select count(*) from carbonintensity) as value, rating as metric from carbonintensity group by rating;",
+          "rawSql": "select 100.0*count(*)/(select count(*) from carbonintensity) as value, rating as metric from carbonintensity group by rating;",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "timeColumns": [
             "time",
             "ts"
@@ -94,7 +115,7 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "type": "grafana-postgresql-datasource",
         "uid": "bdgisvc9bvym8brelease"
       },
       "fieldConfig": {
@@ -167,17 +188,37 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
+            "type": "grafana-postgresql-datasource",
             "uid": "bdgisvc9bvym8brelease"
           },
-          "queryText": "SELECT forecast, actual from carbonintensity order by time desc limit 100;",
-          "queryType": "table",
-          "rawQueryText": "SELECT forecast, actual from carbonintensity order by time desc limit 100;",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT forecast, actual from carbonintensity order by time desc limit 100;",
           "refId": "A",
-          "timeColumns": [
-            "time",
-            "ts"
-          ]
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "forecast",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "carbonintensity"
         }
       ],
       "title": "Carbon intensity: forecast vs actual",
@@ -185,7 +226,7 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "type": "grafana-postgresql-datasource",
         "uid": "bdgisvc9bvym8brelease"
       },
       "gridPos": {
