@@ -170,9 +170,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "bdgisdzvsl43kc"
           },
-          "queryText": "SELECT forecast, actual from carbonintensity;",
+          "queryText": "SELECT forecast, actual from carbonintensity order by time desc limit 100;",
           "queryType": "table",
-          "rawQueryText": "SELECT forecast, actual from carbonintensity;",
+          "rawQueryText": "SELECT forecast, actual from carbonintensity order by time desc limit 100;",
           "refId": "A",
           "timeColumns": [
             "time",
