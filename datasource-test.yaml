@@ -5,7 +5,7 @@ datasources:
     access: proxy
     isDefault: true
     editable: true
-    uid: "bdgisdzvsl43kc"
+    uid: "bdgisdzvsl43kcsqlite"
     jsonData:
       path: /database.db
       pathPrefix: "file:"
