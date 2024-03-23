@@ -1,0 +1,17 @@
+apiVersion: 1
+datasources:
+  - name: postgres
+    type: postgres
+    access: proxy
+    url: postgres:5432
+    user: admin
+    database: db_name
+    isDefault: true
+    editable: true
+    jsonData:
+      postgresVersion: 1200
+      timescaledb: false
+      maxOpenConns: 5
+      sslmode: "disable"
+    secureJsonData:
+      password: changed_later
