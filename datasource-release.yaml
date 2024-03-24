@@ -3,9 +3,9 @@ datasources:
   - name: postgres
     type: postgres
     access: proxy
-    url: $TEST_DB_HOST:$TEST_DB_PORT
-    user: $TEST_DB_USER
-    database: $TEST_DB_NAME
+    url: $DB_HOST:$DB_PORT
+    user: $DB_USER
+    database: $DB_NAME
     isDefault: true
     editable: true
     uid: "bdgisvc9bvym8brelease"
@@ -15,4 +15,4 @@ datasources:
       maxOpenConns: 5
       sslmode: "disable"
     secureJsonData:
-      password: $TEST_DB_PASSWORD
+      password: $DB_PASSWORD

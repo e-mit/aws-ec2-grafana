@@ -8,7 +8,7 @@ docker run -td -p 3000:3000 --name test \
   --rm test:latest
 
 
-# do tests here. Run command like:
+# do tests here. Run commands like:
 # docker exec test python -m mypy . --exclude 'tests/' --exclude 'venv/'
 # docker exec test sh -c 'python -m pycodestyle *.py --exclude=tests/*,venv/*'
 
@@ -16,7 +16,9 @@ docker run -td -p 3000:3000 --name test \
 # Enable public dashboard (cannot be provisioned in files) and print its URL:
 DASHBOARD_UID=bdgisvc9bvym8bdashboardtest  # must match dashboard json file
 _attempt_public_dashboard_enable() {
-    CURL_OUTPUT=$(curl -u admin:${GF_PASSWORD} -XPOST "http://localhost:3000/api/dashboards/uid/${DASHBOARD_UID}/public-dashboards" -H "content-type: application/json" --data-raw '{"isEnabled":true}')
+    CURL_OUTPUT=$(curl -u admin:${GF_PASSWORD} \
+    -XPOST "http://localhost:3000/api/dashboards/uid/${DASHBOARD_UID}/public-dashboards" \
+    -H "content-type: application/json" --data-raw '{"isEnabled":true}')
 }
 _attempt_public_dashboard_enable
 while [[ "$?" -ne 0 ]]; do
@@ -27,7 +29,6 @@ printf '%s\n' "$CURL_OUTPUT" | python3 -c \
 "import sys, json
 id = json.load(sys.stdin)['accessToken']
 print(f'http://localhost:3000/public-dashboards/{id}')"
-
 
 
 # docker stop -t 0 test
