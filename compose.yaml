@@ -10,6 +10,7 @@ services:
       - "8080:80"
     depends_on:
       - grafana
+      - vat
     healthcheck:
       test: ["CMD-SHELL", "curl --silent --fail localhost:80/health-check || exit 1"]
       interval: 10s
@@ -28,3 +29,10 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
+  vat:
+    image: emit5/vat-invoice:6065fdf8047ff554a3d2c82e0d9ec197a0fb28c3
+    restart: always
+    environment:
+      - PORT=8000
+    ports:
+      - '8000:8000'
