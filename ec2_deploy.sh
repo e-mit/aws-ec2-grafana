@@ -1,14 +1,15 @@
 #!/bin/bash
 # Install docker and run a web app container on an already-existing EC2 instance.
 # Note that the EC2 instance must have a policy to allow incoming web requests.
-# Also note: docker-compose is not in the AMI dnf package repo, so is installed
-# from docker github. This means it will not be updated with dnf updates.
+# Also note: docker-compose is not in the AMI dnf package repo, so is obtained
+# as exe from docker github. This means it will not be updated with dnf updates.
 
 KEY_FILENAME=../aws-create-db/key.pem
 EC2_IP=13.43.90.54
 DOCKER_CONTAINER_IMAGE="emit5/grafana-test:latest"
 # GF_SECURITY_ADMIN_PASSWORD  # define this
 DOCKER_COMPOSE_GITHUB="https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64"
+DOCKER_NGINX_IMAGE="emit5/nginx-test:latest"
 
 ################################################
 
@@ -41,7 +42,7 @@ ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT2}"
 
 
-# download the container image, and run it (with restart option):
+# download the grafana container image, and run it (with restart option):
 SSH_SCRIPT3="
 docker pull $DOCKER_CONTAINER_IMAGE
 docker run -d -p 3000:3000 --name grafana-test \
@@ -55,6 +56,16 @@ ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
 # NB: can still stop and delete the container (not the image) with:
 # docker stop -t 0 <name>
 # docker container rm <name>
+
+
+# download and run the nginx image
+SSH_SCRIPT4="
+docker pull $DOCKER_NGINX_IMAGE
+docker run -d -p 80:80 --name nginx \
+--restart=always $DOCKER_NGINX_IMAGE
+"
+ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+    ec2-user@$EC2_IP "${SSH_SCRIPT4}"
 
 
 if (( 0==1 )); then
