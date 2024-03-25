@@ -14,7 +14,7 @@ docker run -td -p 3000:3000 --name test \
 
 
 # Enable public dashboard (cannot be provisioned in files) and print its URL:
-DASHBOARD_UID=bdgisvc9bvym8bdashboardtest  # must match dashboard json file
+DASHBOARD_UID=bdgisvc9bvym8bdashboard  # must match dashboard json file
 _attempt_public_dashboard_enable() {
     CURL_OUTPUT=$(curl -u admin:${GF_PASSWORD} \
     -XPOST "http://localhost:3000/api/dashboards/uid/${DASHBOARD_UID}/public-dashboards" \
@@ -25,10 +25,14 @@ while [[ "$?" -ne 0 ]]; do
     sleep 5
     _attempt_public_dashboard_enable
 done
+# Get the URL:
 printf '%s\n' "$CURL_OUTPUT" | python3 -c \
 "import sys, json
 id = json.load(sys.stdin)['accessToken']
 print(f'http://localhost:3000/public-dashboards/{id}')"
+
+# or without python:
+printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken'
 
 
 # docker stop -t 0 test
