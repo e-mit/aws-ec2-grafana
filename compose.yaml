@@ -1,0 +1,30 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    restart: always
+    environment: 
+      - GRAFANA_ADDR_PORT=grafana:3000
+    ports:
+      - "8080:80"
+    depends_on:
+      - grafana
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:80/health-check || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+  grafana:
+    build: .
+    restart: always
+    environment: 
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_PASSWORD}
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource,grafana-clock-panel
+    ports: 
+      - '3000:3000'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:3000/login || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
