@@ -13,7 +13,7 @@ docker run -td -p 3000:3000 --name release \
   --rm release:latest
 
 # Enable public dashboard (cannot be provisioned in files) and print its URL:
-DASHBOARD_UID=bdgisvc9bvym8bdashboardrelease  # must match dashboard json file
+DASHBOARD_UID=bdgisvc9bvym8bdashboard  # must match dashboard json file
 _attempt_public_dashboard_enable() {
     CURL_OUTPUT=$(curl -u admin:${GF_PASSWORD} \
     -XPOST "http://localhost:3000/api/dashboards/uid/${DASHBOARD_UID}/public-dashboards" \
