@@ -1,9 +1,7 @@
 name: grafana-test
 services:
   nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile-nginx
+    image: emit5/nginx-grafana:latest
     restart: always
     environment:
       - GF_PASSWORD=${GF_PASSWORD}
@@ -21,10 +19,7 @@ services:
     #  timeout: 10s
     #  retries: 3
   grafana:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: test
+    image: emit5/grafana-test:latest
     restart: always
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_PASSWORD}

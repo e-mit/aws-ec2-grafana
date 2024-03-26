@@ -13,4 +13,8 @@ export DB_NAME=grafanatest
 export DB_HOST=host.docker.internal
 # export DB_PASSWORD  # define this
 
-docker compose -f compose-release.yaml up --build --force-recreate
+
+docker build -f Dockerfile --target release -t emit5/grafana-release:latest .
+docker build -f Dockerfile-nginx -t emit5/nginx-grafana:latest .
+
+docker compose -f compose-release.yaml up --force-recreate
