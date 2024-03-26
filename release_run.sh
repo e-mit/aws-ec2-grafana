@@ -3,6 +3,13 @@
 # This builds and runs the Grafana release container alone, and
 # enables the public dashboard.
 
+export DB_PORT=5432
+export DB_USER=grafanauser
+export DB_NAME=grafanatest
+export DB_HOST=host.docker.internal
+# export DB_PASSWORD  # define separately
+# export GF_PASSWORD  # define separately
+
 docker build --target release -t release:latest .
 
 docker run -td -p 3000:3000 --name release \

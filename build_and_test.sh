@@ -3,6 +3,8 @@
 # This builds and runs the Grafana test container alone, and
 # enables the public dashboard.
 
+# export GF_PASSWORD  # define separately
+
 docker build --target test -t test:latest .
 
 docker run -td -p 3000:3000 --name test \
