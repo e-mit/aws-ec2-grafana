@@ -13,11 +13,12 @@ services:
     depends_on:
       - grafana
       - vat
-    #healthcheck:
-    #  test: ["CMD-SHELL", "curl --silent --fail localhost:80/health-check || exit 1"]
-    #  interval: 10s
-    #  timeout: 10s
-    #  retries: 3
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:80/health-check || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   grafana:
     image: emit5/grafana-release:latest
     restart: always
@@ -32,11 +33,12 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
     ports:
       - '3000:3000'
-    #healthcheck:
-    #  test: ["CMD-SHELL", "curl --silent --fail localhost:3000/login || exit 1"]
-    #  interval: 10s
-    #  timeout: 10s
-    #  retries: 3
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:3000/login || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   vat:
     image: emit5/vat-invoice:6065fdf8047ff554a3d2c82e0d9ec197a0fb28c3
     restart: always
