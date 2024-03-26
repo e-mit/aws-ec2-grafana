@@ -29,5 +29,6 @@ while [[ "$?" -ne 0 ]]; do
 done
 
 export PUBLIC_DASHBOARD_ID=$(printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken')
-envsubst '$PUBLIC_DASHBOARD_ID:$DOMAIN_NAME' < /nginx-custom.conf > /etc/nginx/conf.d/nginx-custom.conf \
+envsubst '$PUBLIC_DASHBOARD_ID:$DOMAIN_NAME:$NGINX_PORT' \
+< /nginx-custom.conf > /etc/nginx/conf.d/nginx-custom.conf \
 && nginx -g 'daemon off;'
