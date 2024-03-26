@@ -1,19 +1,29 @@
 #!/bin/bash
 
-# This (re)installs and starts the latest version of the project on the target EC2.
+# (Re)install and start the latest version of the project on the target EC2.
 # This assumes that ec2_setup.sh has already been run once.
 
 KEY_FILENAME=../aws-create-db/key.pem
 EC2_IP=13.43.90.54
-GITHUB_PROJECT_LINK="https://github.com/e-mit/aws-ec2-grafana"
+ENV_FILE=./env-ec2.txt
+USER=ec2-user
+COMPOSE_FILE=compose-test.yaml
 
 ################################################
 
 SSH_SCRIPT="
-rm -rf project
-git clone $GITHUB_PROJECT_LINK project
-./project/compose-release.sh
+rm -rf /home/$USER/project
+mkdir /home/$USER/project
 "
-
 ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
-    ec2-user@$EC2_IP "${SSH_SCRIPT}"
+    $USER@$EC2_IP "${SSH_SCRIPT}"
+
+scp -i $KEY_FILENAME $ENV_FILE $USER@$EC2_IP:/home/$USER/project/env-ec2.txt
+scp -i $KEY_FILENAME $COMPOSE_FILE $USER@$EC2_IP:/home/$USER/project/$COMPOSE_FILE
+
+SSH_SCRIPT2="
+cd /home/$USER/project
+docker compose -f $COMPOSE_FILE --env-file env-ec2.txt up --force-recreate --detach
+"
+ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+    $USER@$EC2_IP "${SSH_SCRIPT2}"
