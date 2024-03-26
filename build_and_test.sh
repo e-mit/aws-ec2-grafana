@@ -1,16 +1,14 @@
 #!/bin/bash
 
+# This builds and runs the Grafana test container alone, and
+# enables the public dashboard.
+
 docker build --target test -t test:latest .
 
 docker run -td -p 3000:3000 --name test \
   -e GF_SECURITY_ADMIN_PASSWORD=${GF_PASSWORD} \
   -e GF_INSTALL_PLUGINS=frser-sqlite-datasource,grafana-clock-panel \
   --rm test:latest
-
-
-# do tests here. Run commands like:
-# docker exec test python -m mypy . --exclude 'tests/' --exclude 'venv/'
-# docker exec test sh -c 'python -m pycodestyle *.py --exclude=tests/*,venv/*'
 
 
 # Enable public dashboard (cannot be provisioned in files) and print its URL:
@@ -25,14 +23,7 @@ while [[ "$?" -ne 0 ]]; do
     sleep 5
     _attempt_public_dashboard_enable
 done
-# Get the URL:
-printf '%s\n' "$CURL_OUTPUT" | python3 -c \
-"import sys, json
-id = json.load(sys.stdin)['accessToken']
-print(f'http://localhost:3000/public-dashboards/{id}')"
-
-# or without python:
-printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken'
-
+DASH_ID=$(printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken')
+echo "Dashboard available at: http://localhost:3000/public-dashboards/$DASH_ID"
 
 # docker stop -t 0 test

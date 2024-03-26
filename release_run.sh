@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This builds and runs the Grafana release container alone, and
+# enables the public dashboard.
+
 docker build --target release -t release:latest .
 
 docker run -td -p 3000:3000 --name release \
@@ -24,11 +27,14 @@ while [[ "$?" -ne 0 ]]; do
     sleep 5
     _attempt_public_dashboard_enable
 done
-printf '%s\n' "$CURL_OUTPUT" | python3 -c \
-"import sys, json
-id = json.load(sys.stdin)['accessToken']
-print(f'http://localhost:3000/public-dashboards/{id}')"
+DASH_ID=$(printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken')
+echo "Dashboard available at: http://localhost:3000/public-dashboards/$DASH_ID"
 
-
-# docker exec release ls
 # docker stop -t 0 release
+
+
+# Note on docker push
+# Always tag twice: version number and latest: then can easily pull latest
+# docker build -t reg/user/image:ver -t reg/user/image:latest .
+# (nb: can also build then tag later)
+# docker push reg/user/image --all-tags
