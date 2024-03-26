@@ -1,3 +1,4 @@
+name: grafana-test
 services:
   nginx:
     build:
@@ -7,9 +8,9 @@ services:
     environment:
       - GF_PASSWORD=${GF_PASSWORD}
       - DASHBOARD_UID=${DASHBOARD_UID}
-      - DOMAIN_NAME=localhost
+      - DOMAIN_NAME=${DOMAIN_NAME}
     ports:
-      - "8080:80"
+      - "${NGINX_PORT}:80"
     depends_on:
       - grafana
       - vat
@@ -19,14 +20,17 @@ services:
     #  timeout: 10s
     #  retries: 3
   grafana:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
     restart: always
-    environment: 
+    environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_PASSWORD}
       - GF_INSTALL_PLUGINS=frser-sqlite-datasource,grafana-clock-panel
       - GF_AUTH_DISABLE_LOGIN_FORM=true
-      - GF_SERVER_DOMAIN=localhost
-    ports: 
+      - GF_SERVER_DOMAIN=${DOMAIN_NAME}
+    ports:
       - '3000:3000'
     #healthcheck:
     #  test: ["CMD-SHELL", "curl --silent --fail localhost:3000/login || exit 1"]
