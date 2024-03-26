@@ -19,7 +19,6 @@ docker run -td -p 3000:3000 --name release \
   -e DB_NAME=${DB_NAME} \
   -e DB_HOST=${DB_HOST} \
   -e DB_PASSWORD=${DB_PASSWORD} \
-  --add-host host.docker.internal:host-gateway \
   --rm release:latest
 
 # Enable public dashboard (cannot be provisioned in files) and print its URL:
