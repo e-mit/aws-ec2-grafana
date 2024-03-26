@@ -1,0 +1,50 @@
+name: grafana-release
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    restart: always
+    environment:
+      - GF_PASSWORD=${GF_PASSWORD}
+      - DASHBOARD_UID=${DASHBOARD_UID}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    ports:
+      - "${NGINX_PORT}:80"
+    depends_on:
+      - grafana
+      - vat
+    #healthcheck:
+    #  test: ["CMD-SHELL", "curl --silent --fail localhost:80/health-check || exit 1"]
+    #  interval: 10s
+    #  timeout: 10s
+    #  retries: 3
+  grafana:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: release
+    restart: always
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_PASSWORD}
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_SERVER_DOMAIN=${DOMAIN_NAME}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '3000:3000'
+    #healthcheck:
+    #  test: ["CMD-SHELL", "curl --silent --fail localhost:3000/login || exit 1"]
+    #  interval: 10s
+    #  timeout: 10s
+    #  retries: 3
+  vat:
+    image: emit5/vat-invoice:6065fdf8047ff554a3d2c82e0d9ec197a0fb28c3
+    restart: always
+    environment:
+      - PORT=8000
+    ports:
+      - '8000:8000'
