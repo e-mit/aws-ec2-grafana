@@ -7,11 +7,14 @@ KEY_FILENAME=../aws-create-db/key.pem
 EC2_IP=13.43.90.54
 ENV_FILE=./env-ec2.txt
 USER=ec2-user
-COMPOSE_FILE=compose-test.yaml
+COMPOSE_FILE=compose-release.yaml
 
 ################################################
 
 SSH_SCRIPT="
+for filename in /home/$USER/project/*.yaml; do
+    docker compose -f \$filename down
+done
 rm -rf /home/$USER/project
 mkdir /home/$USER/project
 "
