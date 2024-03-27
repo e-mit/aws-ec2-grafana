@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This builds and runs the Grafana release container alone, and
+# Build and run the Grafana release container alone, and
 # enables the public dashboard.
 
 export DB_PORT=5432

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Build and run the release configuration (uses
-# Postgres database)
+# Build and run the release configuration locally (using Postgres database)
 
 docker build -f Dockerfile --no-cache --target release -t emit5/grafana-release:latest .
 docker build -f Dockerfile-nginx --no-cache -t emit5/nginx-grafana:latest .
