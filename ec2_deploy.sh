@@ -26,6 +26,7 @@ scp -i $KEY_FILENAME $COMPOSE_FILE $USER@$EC2_IP:/home/$USER/project/$COMPOSE_FI
 
 SSH_SCRIPT2="
 cd /home/$USER/project
+docker compose -f $COMPOSE_FILE pull
 docker compose -f $COMPOSE_FILE --env-file env-ec2.txt up --force-recreate --detach
 rm -f env-ec2.txt
 "
