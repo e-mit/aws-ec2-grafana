@@ -79,9 +79,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "bdgisdzvsl43kcsqlite"
           },
-          "queryText": "select 100.0*count(*)/(select count(*) from carbonintensity) as value, rating as metric from carbonintensity group by rating;",
+          "queryText": "select 100.0*count(*)/(select count(*) from carbonintensityrecord) as value, rating as metric from carbonintensityrecord group by rating;",
           "queryType": "table",
-          "rawQueryText": "select 100.0*count(*)/(select count(*) from carbonintensity) as value, rating as metric from carbonintensity group by rating;",
+          "rawQueryText": "select 100.0*count(*)/(select count(*) from carbonintensityrecord) as value, rating as metric from carbonintensityrecord group by rating;",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -170,9 +170,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "bdgisdzvsl43kcsqlite"
           },
-          "queryText": "SELECT forecast, actual from carbonintensity order by time desc limit 100;",
+          "queryText": "SELECT forecast, actual from carbonintensityrecord order by time desc limit 100;",
           "queryType": "table",
-          "rawQueryText": "SELECT forecast, actual from carbonintensity order by time desc limit 100;",
+          "rawQueryText": "SELECT forecast, actual from carbonintensityrecord order by time desc limit 100;",
           "refId": "A",
           "timeColumns": [
             "time",

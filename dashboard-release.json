@@ -81,11 +81,11 @@
           },
           "editorMode": "code",
           "format": "table",
-          "queryText": "select 100.0*count(*)/(select count(*) from carbonintensity) as value, rating as metric from carbonintensity group by rating;",
+          "queryText": "select 100.0*count(*)/(select count(*) from carbonintensityrecord) as value, rating as metric from carbonintensityrecord group by rating;",
           "queryType": "table",
           "rawQuery": true,
-          "rawQueryText": "select 100.0*count(*)/(select count(*) from carbonintensity) as value, rating as metric from carbonintensity group by rating;",
-          "rawSql": "select 100.0*count(*)/(select count(*) from carbonintensity) as value, rating as metric from carbonintensity group by rating;",
+          "rawQueryText": "select 100.0*count(*)/(select count(*) from carbonintensityrecord) as value, rating as metric from carbonintensityrecord group by rating;",
+          "rawSql": "select 100.0*count(*)/(select count(*) from carbonintensityrecord) as value, rating as metric from carbonintensityrecord group by rating;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -194,7 +194,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT forecast, actual from carbonintensity order by time desc limit 100;",
+          "rawSql": "SELECT forecast, actual from carbonintensityrecord order by time desc limit 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -337,7 +337,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select time, actual from carbonintensity order by time limit 100;",
+          "rawSql": "select time, actual from carbonintensityrecord order by time limit 100;",
           "refId": "A",
           "sql": {
             "columns": [
