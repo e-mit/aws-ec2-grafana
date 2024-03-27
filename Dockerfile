@@ -6,6 +6,9 @@ WORKDIR /
 
 COPY . .
 COPY dashboard.yaml /etc/grafana/provisioning/dashboards/dashboard.yaml
+ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /global-bundle.pem
+USER root
+RUN chmod a+r /global-bundle.pem
 
 FROM base as release
 COPY datasource-release.yaml /etc/grafana/provisioning/datasources/datasource-release.yaml

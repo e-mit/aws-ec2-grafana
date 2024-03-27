@@ -13,6 +13,8 @@ datasources:
       postgresVersion: 1400
       timescaledb: false
       maxOpenConns: 5
-      sslmode: "disable"
+      sslmode: "verify-ca"
+      sslrootcert: "/global-bundle.pem"
+      sslRootCertFile: "/global-bundle.pem"
     secureJsonData:
       password: $DB_PASSWORD
