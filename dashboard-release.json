@@ -110,7 +110,7 @@
           ]
         }
       ],
-      "title": "Carbon intensity rating: all-time occurrence",
+      "title": "Carbon intensity rating (all-time)",
       "type": "piechart"
     },
     {
@@ -337,7 +337,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select time, actual from carbonintensityrecord order by time limit 100;",
+          "rawSql": "select time, actual from carbonintensityrecord order by time desc limit 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -358,7 +358,7 @@
           }
         }
       ],
-      "title": "Carbon intensity (actual) over time",
+      "title": "Carbon intensity (actual, last 7 days)",
       "type": "timeseries"
     }
   ],
