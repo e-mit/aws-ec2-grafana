@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (Re)install and start the latest version of the project on the target EC2.
+# (Re)start the latest version of the project on the target EC2.
 # This assumes that ec2_setup.sh has already been run once.
 
 KEY_FILENAME=../aws-create-db/key.pem
@@ -24,6 +24,7 @@ scp -i $KEY_FILENAME $COMPOSE_FILE $USER@$EC2_IP:/home/$USER/project/$COMPOSE_FI
 SSH_SCRIPT2="
 cd /home/$USER/project
 docker compose -f $COMPOSE_FILE --env-file env-ec2.txt up --force-recreate --detach
+rm -f env-ec2.txt
 "
 ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     $USER@$EC2_IP "${SSH_SCRIPT2}"
