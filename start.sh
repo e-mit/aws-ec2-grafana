@@ -22,13 +22,21 @@ _attempt_public_dashboard_enable() {
     -XPOST "http://grafana:3000/api/dashboards/uid/${DASHBOARD_UID}/public-dashboards" \
     -H "content-type: application/json" --data-raw '{"isEnabled":true}')
 }
-_attempt_public_dashboard_enable
-while [[ "$?" -ne 0 ]]; do
-    sleep 5
-    _attempt_public_dashboard_enable
-done
 
-export PUBLIC_DASHBOARD_ID=$(printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken')
-envsubst '$PUBLIC_DASHBOARD_ID:$DOMAIN_NAME:$PUBLIC_PORT' \
-< /nginx-custom.conf > /etc/nginx/conf.d/nginx-custom.conf \
-&& nginx -g 'daemon off;'
+FLAG_PATH="/etc/nginx/conf.d/STARTED"
+if [ ! -e "$FLAG_PATH" ]; then
+    _attempt_public_dashboard_enable
+    while [[ "$?" -ne 0 ]]; do
+        sleep 5
+        _attempt_public_dashboard_enable
+    done
+
+    export PUBLIC_DASHBOARD_ID=$(printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken')
+    echo "Public dashboard ID: $PUBLIC_DASHBOARD_ID"
+    touch $FLAG_PATH
+    envsubst '$PUBLIC_DASHBOARD_ID:$DOMAIN_NAME:$PUBLIC_PORT' \
+    < /nginx-custom.conf > /etc/nginx/conf.d/nginx-custom.conf \
+    && nginx -g 'daemon off;'
+else
+    nginx -g 'daemon off;'
+fi
