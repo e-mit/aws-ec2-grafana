@@ -12,6 +12,8 @@
 KEY_FILENAME=../aws-create-db/key.pem
 EC2_IP=13.43.90.54
 DOCKER_COMPOSE_GITHUB="https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64"
+DOMAIN_LIST="e-mit.dev,www.e-mit.dev,vat.e-mit.dev,grafana.e-mit.dev"
+#EMAIL_ADDRESS  define this
 
 ################################################
 
@@ -44,9 +46,30 @@ ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT2}"
 
 
-
 # TODO: Create a security policy allowing incoming web requests
-# TODO: Setup TLS
+
+
+# Setup TLS: multiple subdomains get saved into one certificate path.
+# All generated keys/certificates go into: /etc/letsencrypt/live/$first_domain_name
+# This folder contains privkey.pem, fullchain.pem, etc
+# - the nginx variable "ssl_certificate_key" must point to privkey.pem
+# - the nginx variable "ssl_certificate" must point to fullchain.pem
+# Also: all certbot config goes into /etc/letsencrypt, so it is OK to
+# remove the container afterwards.
+SSH_SCRIPT3="
+sudo docker run -it --rm --name certbot \
+-p "80:80" \
+-v "/etc/letsencrypt:/etc/letsencrypt" \
+-v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
+certbot/certbot:latest certonly --standalone \
+-d $DOMAIN_LIST \
+-m $EMAIL_ADDRESS --agree-tos --no-eff-email -n
+"
+ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+    ec2-user@$EC2_IP "${SSH_SCRIPT3}"
+
+# now set a cron job to renew the certificate
+
 
 
 
