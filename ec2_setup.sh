@@ -68,8 +68,20 @@ certbot/certbot:latest certonly --standalone \
 ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT3}"
 
-# now set a cron job to renew the certificate
-
+# Set a cron job weekly at 2am to (attempt to) renew the certificate
+scp -i $KEY_FILENAME ec2_cert_renew.sh ec2-user@$EC2_IP:/home/ec2-user/ec2_cert_renew.sh
+SSH_SCRIPT4="
+sudo dnf update -y
+sudo dnf install -y cronie cronie-anacron
+sudo crontab -r
+sudo systemctl enable crond.service
+sudo systemctl start crond.service
+sudo rm -f /var/log/ec2_cert_renew.log
+(sudo crontab -l 2>/dev/null; echo '0 2 * * 1 /home/ec2-user/ec2_cert_renew.sh \
+>> /var/log/ec2_cert_renew.log 2>&1') | sudo crontab -
+"
+ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+    ec2-user@$EC2_IP "${SSH_SCRIPT4}"
 
 
 
