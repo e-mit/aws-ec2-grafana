@@ -9,9 +9,16 @@ RUN rm -rf /var/cache/apt/lists
 WORKDIR /
 
 COPY start.sh start.sh
-COPY nginx-custom.conf nginx-custom.conf
 RUN mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.old
 RUN mv /etc/nginx/nginx.conf /etc/nginx/old
 COPY nginx.conf /etc/nginx/nginx.conf
 
+FROM base as release
+# Conf includes TLS
+COPY nginx-custom-release.conf nginx-custom.conf
+CMD ./start.sh
+
+FROM base as test
+# Conf does not include TLS
+COPY nginx-custom-test.conf nginx-custom.conf
 CMD ./start.sh

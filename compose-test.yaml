@@ -1,7 +1,7 @@
 name: grafana-test
 services:
   nginx:
-    image: emit5/nginx-grafana:latest
+    image: nginx-test:latest
     container_name: nginx
     restart: always
     environment:
@@ -12,22 +12,24 @@ services:
       - PUBLIC_PORT_TLS=${PUBLIC_PORT_TLS}
     ports:
       - "${PUBLIC_PORT}:80"
-      - "${PUBLIC_PORT_TLS}:443"
     depends_on:
       - grafana
       - vat
-    volumes:
-      - /etc/letsencrypt/:/etc/letsencrypt/:ro
 
   grafana:
-    image: emit5/grafana-test:latest
+    image: grafana-test:latest
     container_name: grafana
     restart: always
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_PASSWORD}
       - GF_INSTALL_PLUGINS=frser-sqlite-datasource,grafana-clock-panel
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
       - GF_SERVER_DOMAIN=${DOMAIN_NAME}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PASSWORD=${DB_PASSWORD}
     ports:
       - '3000:3000'
 

@@ -11,9 +11,11 @@ USER root
 RUN chmod a+r /global-bundle.pem
 
 FROM base as release
+# Data from PostgreSQL database
 COPY datasource-release.yaml /etc/grafana/provisioning/datasources/datasource-release.yaml
 COPY dashboard-release.json /etc/grafana/provisioning/dashboards/dashboard-release.json
 
 FROM base as test
+# Data from local SQLite database
 COPY datasource-test.yaml /etc/grafana/provisioning/datasources/datasource-test.yaml
 COPY dashboard-test.json /etc/grafana/provisioning/dashboards/dashboard-test.json
