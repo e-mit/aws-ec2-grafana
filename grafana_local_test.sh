@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Build and run the Grafana container locally
-# and enable the public dashboard.
+# Build and run just the Grafana container locally
+# (not with nginx) and enable the public dashboard.
 
 # Choose test or release:
 CONFIG=test

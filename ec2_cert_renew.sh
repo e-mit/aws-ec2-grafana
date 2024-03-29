@@ -2,7 +2,7 @@
 
 # Renew expiring letsencrypt certificate(s)
 # This is required every 3 months, but OK to run
-# every week.
+# every week (using crontab).
 
 DATE=$(date)
 echo ""
