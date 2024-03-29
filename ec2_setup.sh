@@ -10,12 +10,21 @@
 # as exe from docker github. This means it will not be updated with dnf updates.
 
 SSH_KEY_FILENAME=../aws-create-db/key.pem
-EC2_IP=13.43.90.54
+EC2_ID=i-0a22f77855ffd7af2
 DOCKER_COMPOSE_GITHUB="https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64"
 DOMAIN_LIST="e-mit.dev,www.e-mit.dev,vat.e-mit.dev,grafana.e-mit.dev"
 #EMAIL_ADDRESS  define this
 
 ################################################
+
+# Prevent terminal output waiting:
+export AWS_PAGER=""
+
+# Get the EC2 public IP address:
+EC2_IP=$(aws ec2 describe-instances \
+--instance-ids $EC2_ID | \
+python3 -c "import sys, json
+print(json.load(sys.stdin)['Reservations'][0]['Instances'][0]['PublicIpAddress'])")
 
 # Install docker, add ec2-user to the docker group so that sudo is not needed,
 # enable the services required for automatic restart after reboot, then log out:
@@ -45,8 +54,49 @@ chmod +x \$DOCKER_CONFIG/cli-plugins/docker-compose
 ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT2}"
 
+# Get the EC2 VPC ID
+VPC_ID=$(aws ec2 describe-instances \
+--instance-ids $EC2_ID | \
+python3 -c "import sys, json
+print(json.load(sys.stdin)['Reservations'][0]['Instances'][0]['VpcId'])")
 
-# TODO: Create a security policy allowing incoming web requests
+# Create a security group allowing incoming web requests:
+SG_ID=$(aws ec2 create-security-group \
+--description "Allow inbound access to web server" \
+--group-name "webServerGroup" \
+--vpc-id "$VPC_ID" | \
+python3 -c "import sys, json
+print(json.load(sys.stdin)['GroupId'])")
+
+# Add inbound rules
+aws ec2 authorize-security-group-ingress \
+--group-id $SG_ID \
+--ip-permissions \
+IpProtocol=tcp,FromPort=80,ToPort=80,\
+IpRanges="[{CidrIp=0.0.0.0/0}]",\
+Ipv6Ranges="[{CidrIpv6=::/0}]" \
+IpProtocol=tcp,FromPort=443,ToPort=443,\
+IpRanges="[{CidrIp=0.0.0.0/0}]",\
+Ipv6Ranges="[{CidrIpv6=::/0}]" &> /dev/null
+
+# Remove the default outbound rule
+aws ec2 revoke-security-group-egress \
+--group-id $SG_ID \
+--ip-permissions IpProtocol=-1,FromPort=-1,ToPort=-1,IpRanges="[{CidrIp=0.0.0.0/0}]" &> /dev/null
+
+# Get the EC2's current security groups:
+SG_LIST=$(aws ec2 describe-instances \
+--instance-ids $EC2_ID | \
+python3 -c "import sys, json
+s = ''
+for sg in json.load(sys.stdin)['Reservations'][0]['Instances'][0]['SecurityGroups']:
+    s+=(str(sg['GroupId']) + ' ')
+print(s)")
+
+# Assign the EC2 to this security group:
+aws ec2 modify-instance-attribute \
+--instance-id $EC2_ID \
+--groups $SG_ID $SG_LIST
 
 
 # Setup TLS: multiple subdomains get saved into one certificate path.
