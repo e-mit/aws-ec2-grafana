@@ -9,7 +9,7 @@
 # Note that docker-compose is not in the AMI dnf package repo, so is obtained
 # as exe from docker github. This means it will not be updated with dnf updates.
 
-KEY_FILENAME=../aws-create-db/key.pem
+SSH_KEY_FILENAME=../aws-create-db/key.pem
 EC2_IP=13.43.90.54
 DOCKER_COMPOSE_GITHUB="https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64"
 DOMAIN_LIST="e-mit.dev,www.e-mit.dev,vat.e-mit.dev,grafana.e-mit.dev"
@@ -26,11 +26,11 @@ sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 sudo usermod -a -G docker ec2-user
 "
-ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT}"
 
 # NB: can pass in env vars like:
-# ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+# ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
 #    ec2-user@$EC2_IP ENV_VAR=$LOCAL_ENV_VAR "${SSH_SCRIPT}"
 
 # log back in, download and install docker-compose (not in distro repo)
@@ -42,7 +42,7 @@ curl -SL $DOCKER_COMPOSE_GITHUB \
 -o \$DOCKER_CONFIG/cli-plugins/docker-compose
 chmod +x \$DOCKER_CONFIG/cli-plugins/docker-compose
 "
-ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT2}"
 
 
@@ -65,11 +65,11 @@ certbot/certbot:latest certonly --standalone \
 -d $DOMAIN_LIST \
 -m $EMAIL_ADDRESS --agree-tos --no-eff-email -n
 "
-ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT3}"
 
 # Set a cron job weekly at 2am to (attempt to) renew the certificate
-scp -i $KEY_FILENAME ec2_cert_renew.sh ec2-user@$EC2_IP:/home/ec2-user/ec2_cert_renew.sh
+scp -i $SSH_KEY_FILENAME ec2_cert_renew.sh ec2-user@$EC2_IP:/home/ec2-user/ec2_cert_renew.sh
 SSH_SCRIPT4="
 sudo dnf update -y
 sudo dnf install -y cronie cronie-anacron
@@ -80,13 +80,13 @@ sudo rm -f /var/log/ec2_cert_renew.log
 (sudo crontab -l 2>/dev/null; echo '0 2 * * 1 /home/ec2-user/ec2_cert_renew.sh \
 >> /var/log/ec2_cert_renew.log 2>&1') | sudo crontab -
 "
-ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT4}"
 
 
 
 if (( 0==1 )); then
 # Note: to SSH manually:
-ssh -t -i $KEY_FILENAME -o StrictHostKeyChecking=accept-new \
+ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP bash
 fi
