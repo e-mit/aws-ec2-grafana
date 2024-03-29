@@ -34,7 +34,7 @@ if [ ! -e "$FLAG_PATH" ]; then
     export PUBLIC_DASHBOARD_ID=$(printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken')
     echo "Public dashboard ID: $PUBLIC_DASHBOARD_ID"
     touch $FLAG_PATH
-    envsubst '$PUBLIC_DASHBOARD_ID:$DOMAIN_NAME:$PUBLIC_PORT' \
+    envsubst '$PUBLIC_DASHBOARD_ID:$DOMAIN_NAME:$PUBLIC_PORT:$PUBLIC_PORT_TLS' \
     < /nginx-custom.conf > /etc/nginx/conf.d/nginx-custom.conf \
     && nginx -g 'daemon off;'
 else

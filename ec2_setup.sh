@@ -4,7 +4,7 @@
 #  - Install docker and docker compose
 #  - Enable docker service to persist across reboot
 #  - Create a security policy allowing incoming web requests
-#  - Setup TLS
+#  - Setup TLS and certificate renewal
 
 # Note that docker-compose is not in the AMI dnf package repo, so is obtained
 # as exe from docker github. This means it will not be updated with dnf updates.
