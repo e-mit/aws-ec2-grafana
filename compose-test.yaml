@@ -17,7 +17,7 @@ services:
       - grafana
       - vat
     volumes:
-      - /etc/letsencrypt/live/:/etc/letsencrypt/live/:ro
+      - /etc/letsencrypt/:/etc/letsencrypt/:ro
 
   grafana:
     image: emit5/grafana-test:latest
