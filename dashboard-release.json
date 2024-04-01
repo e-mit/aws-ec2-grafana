@@ -243,7 +243,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "#### GitHub links\n\n- Data acquisition using AWS Lambda: [github.com/e-mit/aws-lambda-get](https://github.com/e-mit/aws-lambda-get)\n- Data validation using AWS Lambda, SQS, SQLModel: [github.com/e-mit/aws-lambda-db](https://github.com/e-mit/aws-lambda-db)\n- Setup AWS EC2 and RDS with PostgreSQL: [github.com/e-mit/aws-postgres](https://github.com/e-mit/aws-postgres)\n- Grafana configuration and Docker build: [github.com/e-mit/grafana-docker](https://github.com/e-mit/grafana-docker)\n\n\nData source: [carbonintensity.org.uk](https://carbonintensity.org.uk/)",
+        "content": "#### GitHub links\n\n- Data acquisition using AWS Lambda: [github.com/e-mit/aws-lambda-get](https://github.com/e-mit/aws-lambda-get)\n- Data validation using AWS Lambda, SQS, SQLModel: [github.com/e-mit/aws-lambda-db](https://github.com/e-mit/aws-lambda-db)\n- Setup AWS EC2 and RDS with PostgreSQL: [github.com/e-mit/aws-create-db](https://github.com/e-mit/aws-create-db)\n- Grafana configuration and Docker build: [github.com/e-mit/aws-ec2-grafana](https://github.com/e-mit/aws-ec2-grafana)\n\n\nData source: [carbonintensity.org.uk](https://carbonintensity.org.uk/)",
         "mode": "markdown"
       },
       "pluginVersion": "10.4.1",
