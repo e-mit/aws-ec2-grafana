@@ -1,2 +1,4 @@
 env.txt
 env-ec2.txt
+venv
+__pycache__
