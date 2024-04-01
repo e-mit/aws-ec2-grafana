@@ -34,20 +34,17 @@ jobs:
         export DASHBOARD_UID=bdgisvc9bvym8bdashboard
         export DOMAIN_NAME=localhost
         export PUBLIC_PORT=8080
-        export PUBLIC_PORT_TLS=8443  # Dummy value, not used
-        docker compose -f compose-test.yaml up --force-recreate &
-        # wait for the grafana server to start
-        _grafana_get() {
-            CURL_OUTPUT=$(curl -u admin:admin \
-            -X GET "http://localhost:3000/api/datasources" \
-            -H "content-type: application/json")
-        }
-        _grafana_get
-        while [[ "$?" -ne 0 ]]; do
-            sleep 5
-            _grafana_get
-        done
-        sleep 5
+        # Dummy values (not used):
+        export PUBLIC_PORT_TLS=8443
+        export DB_PORT=5432
+        export DB_USER=grafanauser
+        export DB_NAME=grafanatest
+        export DB_HOST=host.docker.internal
+        export DB_PASSWORD=Test1234
+        docker compose -f compose-test.yaml up --detach --force-recreate
+    - name: Docker compose
+      shell: bash
+      run: ./.github/grafana_wait.sh
     - name: local test
       shell: bash
       run: python -m pytest test_*.py
