@@ -13,9 +13,11 @@ Starting point: an AWS account with:
 
 View the example deployment at: [https://grafana.e-mit.dev](https://grafana.e-mit.dev)
 
-See also:
+
+### See also
+
 - [github.com/e-mit/aws-create-db](https://github.com/e-mit/aws-create-db) for the EC2 and RDS setup
-- [github.com/e-mit/aws-lambda-get](https://github.com/e-mit/aws-lambda-get) and [github.com/e-mit/aws-lambda-db](https://github.com/e-mit/aws-lambda-db) for gathering data into the RDS using Lambda functions
+- [github.com/e-mit/aws-lambda-get](https://github.com/e-mit/aws-lambda-get) and [github.com/e-mit/aws-lambda-db](https://github.com/e-mit/aws-lambda-db) for gathering API data into the RDS using Lambda functions
 
 
 ### Readme Contents
