@@ -42,10 +42,10 @@ jobs:
         export DB_HOST=host.docker.internal
         export DB_PASSWORD=Test1234
         docker compose -f compose-test.yaml up --detach --force-recreate
-    - name: Docker compose
+    - name: Wait for Grafana server
       shell: bash
       run: ./.github/grafana_wait.sh
-    - name: local test
+    - name: local tests
       shell: bash
       run: |
         export PUBLIC_PORT=8080
