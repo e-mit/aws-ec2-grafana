@@ -14,14 +14,3 @@ jobs:
         docker build -f Dockerfile-nginx --no-cache --target test -t nginx-test:latest .
         docker save grafana-test:latest > grafana_test_image.tar
         docker save nginx-test:latest > nginx_test_image.tar
-    - name: Save image
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-build-${{ github.sha }}
-        path: |
-          grafana_test_image.tar
-          nginx_test_image.tar
-        if-no-files-found: error
-        retention-days: 1
-    - name: Pause due to GitHub problem with artifact upload/download
-      run: sleep 30

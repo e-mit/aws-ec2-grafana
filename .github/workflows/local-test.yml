@@ -22,19 +22,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r test_requirements.txt
-    - name: Pause due to GitHub problem with artifact upload/download
-      run: sleep 30
-    - name: Retrieve Docker image
-      uses: actions/download-artifact@v4
-      with:
-        name: test-build-${{ github.sha }}
-        run-id: ${{ github.event.workflow_run.id }}
-        github-token: ${{ secrets.GH_PAT }}
-    - name: Docker load
+    - name: Docker build
       shell: bash
       run: |
-        docker load < grafana_test_image.tar
-        docker load < nginx_test_image.tar
+        docker build -f Dockerfile --no-cache --target test -t grafana-test:latest .
+        docker build -f Dockerfile-nginx --no-cache --target test -t nginx-test:latest .
     - name: Docker compose
       shell: bash
       run: |
