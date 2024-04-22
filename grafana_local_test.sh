@@ -1,20 +1,26 @@
 #!/bin/bash
 
-# Build and run just the Grafana container locally
-# (not with nginx) and enable the public dashboard.
+# Build and run just the Grafana container locally (not with nginx),
+# with either SQLite or Postgres database, and enable the public dashboard.
 
-# Choose test or release:
+# Choose database type:
 CONFIG=test
 # test = use SQLite database in the container
-# release = use a PostgreSQL database as specified by the following
+# release = use a PostgreSQL database as specified by the following variables:
 export DB_PORT=5432
 export DB_USER=grafanauser
 export DB_NAME=grafanatest
 export DB_HOST=host.docker.internal
-# export DB_PASSWORD  # define this
-# export GF_PASSWORD  # define this
+# export DB_PASSWORD  # define this if using PostgreSQL
+# Note: the DB_* variables are not used with SQLite
+# export GF_PASSWORD  # always define this: password to set for Grafana
 
 ########################################################################
+
+if [[ -z $GF_PASSWORD ]]; then
+    echo ERROR: Please set GF_PASSWORD
+    return 1
+fi
 
 docker build --target $CONFIG -t $CONFIG:latest .
 
@@ -30,7 +36,7 @@ docker run -td -p 3000:3000 --name $CONFIG \
 
 # Enable public dashboard (cannot be provisioned in files) and print its URL:
 echo ""
-echo "Waiting for Grafana to startup..."
+echo "Waiting for Grafana to startup to get dashboard link..."
 echo ""
 DASHBOARD_UID=bdgisvc9bvym8bdashboard  # must match dashboard json file
 _attempt_public_dashboard_enable() {
@@ -44,8 +50,9 @@ while [[ "$?" -ne 0 ]]; do
     _attempt_public_dashboard_enable
 done
 DASH_ID=$(printf '%s\n' "$CURL_OUTPUT" | jq -r '.accessToken')
+echo ""
 echo "Dashboard available at: http://localhost:3000/public-dashboards/$DASH_ID"
-
+echo ""
 
 if [ $CONFIG = "release" ]; then
     # Disable the sslmode of the grafana postgres (only needed for release config)
@@ -61,6 +68,8 @@ curl -u admin:${GF_PASSWORD} -X PUT "http://localhost:3000/api/datasources/uid/b
 '"version":3,"readOnly":false}' &> /dev/null
 fi
 
+
+python -m pytest test_local_no_nginx.py
 
 # Stop and remove:
 # docker stop -t 0 $CONFIG
