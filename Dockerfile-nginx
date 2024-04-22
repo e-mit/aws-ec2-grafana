@@ -9,6 +9,7 @@ RUN rm -rf /var/cache/apt/lists
 WORKDIR /
 
 COPY start.sh start.sh
+COPY 503.html /usr/share/nginx/html/503.html
 RUN mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.old
 RUN mv /etc/nginx/nginx.conf /etc/nginx/old
 COPY nginx.conf /etc/nginx/nginx.conf
