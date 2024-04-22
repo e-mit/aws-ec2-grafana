@@ -1,11 +1,13 @@
+"""Simple tests of the local test configuration.
+
+This uses nginx without TLS, and can use either a
+PostgreSQL or SQLite database.
+"""
 import os
 import time
 
 import pytest
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import chromedriver_autoinstaller
 
 

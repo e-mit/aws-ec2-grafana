@@ -19,7 +19,7 @@ export DB_HOST=host.docker.internal
 
 if [[ -z $GF_PASSWORD ]]; then
     echo ERROR: Please set GF_PASSWORD
-    return 1
+    exit 1
 fi
 
 docker build --target $CONFIG -t $CONFIG:latest .
@@ -35,9 +35,6 @@ docker run -td -p 3000:3000 --name $CONFIG \
   --rm $CONFIG:latest
 
 # Enable public dashboard (cannot be provisioned in files) and print its URL:
-echo ""
-echo "Waiting for Grafana to startup to get dashboard link..."
-echo ""
 DASHBOARD_UID=bdgisvc9bvym8bdashboard  # must match dashboard json file
 _attempt_public_dashboard_enable() {
     CURL_OUTPUT=$(curl -u admin:${GF_PASSWORD} \
@@ -46,6 +43,9 @@ _attempt_public_dashboard_enable() {
 }
 _attempt_public_dashboard_enable
 while [[ "$?" -ne 0 ]]; do
+    echo ""
+    echo "Waiting for Grafana startup to get dashboard link..."
+    echo ""
     sleep 5
     _attempt_public_dashboard_enable
 done
@@ -70,6 +70,7 @@ fi
 
 
 python -m pytest test_local_no_nginx.py
+
 
 # Stop and remove:
 # docker stop -t 0 $CONFIG

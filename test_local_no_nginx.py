@@ -1,7 +1,6 @@
-"""Simple tests running only the Grafana container locally (not with nginx).
+"""Simple checks running only the Grafana container locally (not with nginx).
 
-This uses nginx without TLS, and can use either a
-PostgreSQL or SQLite database.
+This can use either a PostgreSQL or SQLite database.
 """
 import time
 
@@ -17,7 +16,7 @@ chromedriver_autoinstaller.install()
 
 @pytest.fixture
 def driver():
-    time.sleep(4)  # Delay to prevent Nginx 503 rate limiting
+    time.sleep(4)
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
