@@ -5,6 +5,7 @@
 #  - Enable docker service to persist across reboot
 #  - Create a security policy allowing incoming web requests
 #  - Setup TLS and certificate renewal
+#  - Setup periodic deletion of old data in the database (requires .pgpass file)
 
 # Note that docker-compose is not in the AMI dnf package repo, so is obtained
 # as exe from docker github. This means it will not be updated with dnf updates.
@@ -120,7 +121,10 @@ ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
 
 # Set a cron job weekly at 2am to (attempt to) renew the certificate.
 # Also set a cron job to install security updates every day at 1am.
+# Also set a cron job to delete all old database entries every day at 3am.
 scp -i $SSH_KEY_FILENAME ec2_cert_renew.sh ec2-user@$EC2_IP:/home/ec2-user/ec2_cert_renew.sh
+scp -i $SSH_KEY_FILENAME delete_old_records.sh ec2-user@$EC2_IP:/home/ec2-user/delete_old_records.sh
+scp -i $SSH_KEY_FILENAME .pgpass ec2-user@$EC2_IP:/home/ec2-user/.pgpass
 SSH_SCRIPT4="
 sudo dnf update -y
 sudo dnf install -y cronie cronie-anacron
@@ -133,6 +137,8 @@ sudo rm -f /var/log/ec2_cert_renew.log /var/log/security_updates.log
 (sudo crontab -l 2>/dev/null; echo '0 1 * * * /usr/bin/dnf upgrade --security \
 --assumeyes --releasever=latest \
 >> /var/log/security_updates.log 2>&1') | sudo crontab -
+(sudo crontab -l 2>/dev/null; echo '0 3 * * * /home/ec2-user/delete_old_records.sh \
+>> /var/log/delete_old_records.log 2>&1') | sudo crontab -
 "
 ssh -t -i $SSH_KEY_FILENAME -o StrictHostKeyChecking=accept-new \
     ec2-user@$EC2_IP "${SSH_SCRIPT4}"

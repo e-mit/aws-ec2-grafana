@@ -3,3 +3,4 @@ env-ec2.txt
 venv
 __pycache__
 .python-version
+.pgpass
