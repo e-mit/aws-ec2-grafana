@@ -3,6 +3,7 @@
 # Renew expiring letsencrypt certificate(s)
 # This is required every 3 months, but OK to run
 # every week (using crontab).
+# Certbot will renew 30 days before expiry (unless forced).
 
 DATE=$(date)
 echo ""
